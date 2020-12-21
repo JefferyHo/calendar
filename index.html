@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>有效思考</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+      background: #b5f5ec;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+  
+    .left,
+    .right {
+      min-height: calc(100vh - 40px);
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      ;
+    }
+  
+    .right {
+      width: 300px;
+    }
+  
+    .left {
+      flex: 1;
+      margin-right: 24px;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="left">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="right">
+      <div class="info-item">
+        <h5 class="title">三件感恩的事情</h5>
+        <div class="things-wpt" id="thingsWrap">
+          <!-- things detail -->
+        </div>
+      </div>
+      <div class="info-item">
+        <h5 class="title">今天运动了吗?</h5>
+        <!--  -->
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  let birth = "1993-10-1";
+  let liveYear = 60;
+  let col = 35; // 每行放35个格子
+  var offset = 6;
+  var tri_width = 18;
+
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var width = Math.max(canvas.offsetWidth, 600);
+  var height = Math.max(canvas.offsetHeight, 600);
+
+
+  var affairs = [
+    {
+      date: "1996-10-1",
+      listDone: [
+        '扶老奶奶过马路',
+        '扶老奶奶过马路',
+        '扶老奶奶过马路'
+      ],
+      exercised: true
+    },
+    {
+      date: "2009-10-2",
+      listDone: [
+        '扶老奶奶过马路',
+        '扶老奶奶过马路',
+        '扶老奶奶过马路'
+      ],
+      exercised: true
+    }
+  ];
+  var affairsCountArray = new Array();
+
+  var colors = {
+    stroke: '#d9d9d9',
+    fill: '#faad14',
+    fill_things: '#fa541c'
+  };
+  
+  function getRestMonths(birthDate, years) {
+    var total = years * 12;
+    var current = moment().diff(moment(birthDate), 'month');
+
+    return {
+      total,
+      past: current
+    }
+  }
+
+  function drawTriangle(_width, x, y) {
+    ctx.moveTo(x+_width, y);
+    ctx.lineTo(x+_width - tri_width, y);
+    ctx.lineTo(x+_width, y + tri_width);
+    ctx.fillStyle = colors.fill_things;
+    ctx.fill();
+  }
+
+  function draw (monthObj) {
+    var total = monthObj.total;
+    var past = monthObj.past;
+    
+    canvas.width = width;
+    canvas.height = height;
+    
+    // 每个格子的宽高
+    var _width = width / col - offset;
+
+
+    for(var i = 0, rowLen = Math.ceil(total / col); i < rowLen; i++) {
+      var y = ( _width + offset ) * i;
+      for(var j = 0; j < col; j ++) {
+        var count = i * col + j+1;
+        if(count > total) {
+          break;
+        }
+
+        var x = ( _width + offset ) * j;
+
+        if(count < past) {
+          ctx.fillStyle =  colors.fill;
+          ctx.fillRect(x, y, _width,  _width);
+
+          // 绑定事务
+          for(var m = 0; m < affairs.length; m++) {
+            var a = affairs[m]["date"];
+            var current_month = moment(birth).add(count, 'months');
+
+            if(current_month.isSame(a, 'month')) {
+              drawTriangle(_width, x, y);
+              affairs.splice(m, 1);
+              affairsCountArray.push(count - 1);
+              break;
+            }
+          }
+        } else {
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = colors.stroke;
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + _width, y);
+          ctx.lineTo(x + _width, y + _width);
+          ctx.lineTo(x, y + _width);
+          ctx.lineTo(x, y);
+        }
+      }
+    }
+
+    ctx.stroke();
+
+  }
+  var monthObj = getRestMonths(birth, liveYear);
+  draw(monthObj);
+
+  canvas.addEventListener("click", function(e){
+    var offsetX = e.offsetX;
+    var offsetY = e.offsetY;
+    var x = Math.floor(offsetY / width * col);
+    var y = Math.floor(offsetX / width * col);
+    var count = x * col + y;
+
+    if(affairsCountArray.includes(count)) {
+      console.log("had");
+    } else {
+      console.log("?");
+    }
+  });
+
+  function isSameMonth(month1, month2) {
+    return moment(month1).isSame(month2, 'month');
+  }
+
+</script>
+</html>

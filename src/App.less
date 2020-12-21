@@ -1,0 +1,29 @@
+.App {
+  display: flex;
+  flex-direction: row;
+  background: #f6f6f6;
+  min-width: 600px;
+  min-height: 600px;
+  height: 100vh;
+
+  .sider-wpt { 
+    width: 180px;
+    height: 100vh;
+    min-height: 600px;
+  }
+
+  .content-wpt, .content-wpt {
+    flex: 1;
+    background: #fff;
+    min-height: 600px;
+   height: 100vh;
+}
+}
+
+@media screen and (max-width: 840px) {
+  .App {
+    .sider-wpt {
+      display: none;
+    }
+  }
+}
