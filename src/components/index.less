@@ -97,14 +97,22 @@
                 }
             }
 
+            .weekdays {
+                padding-bottom: 8px;
+                color: rgba(0, 0, 0, 0.534);
+                span {
+                    text-align: center;
+                }
+            }
+
             .days {
                 border-top: @borderE;
                 span {
-                    height: calc((100vh - 99px) / 6);
+                    height: calc((100vh - 103px) / 6);
                     border-right: @borderE;
                     border-bottom: @borderE;
                     box-sizing: border-box;
-                    font-weight: bold;
+                    // font-weight: bold;
                     padding-right: 4px;
                     
                     &.weekend {

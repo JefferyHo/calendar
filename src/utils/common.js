@@ -8,9 +8,6 @@ export const formatTime = (timestamp) => {
         return `${toTwo(timeDate.getFullYear() % 100)}-${toTwo(timeDate.getMonth() + 1)}-${toTwo(timeDate.getDate())}`;
     }
     return `${toTwo(timeDate.getHours())}:${toTwo(timeDate.getMinutes())}`;
-
-
-
 };
 
 const toTwo = (num) => {

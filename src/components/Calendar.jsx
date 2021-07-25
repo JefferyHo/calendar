@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { generateDates } from '../utils/calculate';
 
 const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
 /**
@@ -9,19 +10,8 @@ const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
  * @return {Dom} 
  */
 const calender = ({ date = new Date(), isThumb = false, handleClick }) => {
-  if(!moment.isMoment(date)) {
-    date = moment(date);
-  }
-  // get the first day of month display
-  let monthFirstDay = moment(date).startOf("month"),
-    currentWeek,
-    firstDay;
-  currentWeek = monthFirstDay.weekday();
-  firstDay = monthFirstDay.add(-currentWeek, 'days');
-  let arr = [];
-  for(let i = 0; i < 42; i++) {
-    arr.push(moment(firstDay).add(i, 'days').format("YYYY-MM-DD"));
-  }
+  let arr = generateDates(date);
+  
   return <div className="calendar-wpt">
     <div className="weekdays">
       {
@@ -33,7 +23,7 @@ const calender = ({ date = new Date(), isThumb = false, handleClick }) => {
         arr.map(item => 
         <span 
           key={item} 
-          onClick={e => handleClick(item)}
+          onClick={e => handleClick(e, item)}
           className={[
             moment(item).isSame(new Date(), 'day') ? 'now' : undefined,
             moment(item).isSame(date, 'month') ? undefined : 'not-current',
@@ -41,9 +31,7 @@ const calender = ({ date = new Date(), isThumb = false, handleClick }) => {
           ].join(" ")}
           >
           {
-            isThumb
-            ? moment(item).format("MM/DD")
-            : moment(item).date()
+            moment(item).date()
           }
         </span>)
       }
